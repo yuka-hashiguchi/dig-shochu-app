@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="theme-color" content="#000000">
+  <title>SATSUMA</title>
+  <link rel="stylesheet" type="text/css" href="./stylesheet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+  <script type="text/javascript" src="./shochu.js"></script>
+  <script type="text/javascript" src="./script.js"></script>
+</head>
+
+<body>
+  <div class="menu">
+    <h1>Boku Shochu Kimi Shochu</h1>
+    <h2>Select Menu</h2>
+    <div>
+      <ul class="tab-menu">
+        <li id="0" class="tab tab-home is-active">Home</li>
+        <li id="1" class="tab tab-roulette">Roulette</li>
+        <li id="2" class="tab tab-db">Shochu DB</li>
+      </ul>
+  </div>
+  <div class="contents">
+    <div class="content is-show">
+      <h2>Modify Code</h2>
+      <pre>
+        <code>
+          target = satsumaShochu.filter(shochu => shochu.stock > 0)
+                  .filter(shochu => shochu.rare >= threshold)
+                  .map(shochu => shochu.name);
+        </code>
+      </pre>
+      https://colorkitty.com/
+      <h2>Select Menu</h2>
+    </div>
+    <div class="content">
+      <h3>Today's Shochu!</h3>
+      <img id="roulette-img" src="./img/satsumashochu-logo.jpg">
+      <div class="select-wrapper">
+        <select name="rare-selector" id="rare-selector">
+          <option value="5">Very rare</option>
+          <option value="4">Rare</option>
+          <option value="3">Neutral</option>
+          <option value="2">Less rare</option>
+          <option value="1" selected>Not Rare</option>
+        </select>
+      </div>
+      <button id="roulette-btn" type="button">Start</button>
+    </div>
+    <div class="content">
+      <h3>Shochu DB</h3>
+      <table id="database" border="1">
+        <tr>
+          <th class="fixed">Image</th>
+          <th class="fixed">Name</th>
+          <th class="fixed">Rare</th>
+        </tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
