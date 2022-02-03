@@ -1,6 +1,21 @@
 'use strict';
-
-hljs.initHighlightingOnLoad();
+// utilities
+/**
+ * @param {Array<object>} arrayOfObj
+ * @param {string|number} sortKey
+ */
+function bubbleSortObj(arrayOfObj, sortKey) {
+    for (let i = 0; i < arrayOfObj.length - 1; i++) {
+        for (let j = 0; j < arrayOfObj.length - 1 - i; j++) {
+            if (arrayOfObj[j][sortKey] > arrayOfObj[j + 1][sortKey]) {
+                const tmp = arrayOfObj[j + 1];
+                arrayOfObj[j + 1] = arrayOfObj[j];
+                arrayOfObj[j] = tmp;
+            }
+        }
+    }
+    return arrayOfObj;
+}
 
 // wait until all the DOM are loaded
 window.onload = () => {
@@ -28,7 +43,7 @@ window.onload = () => {
         if (isRouletting) {
             // press roulette stop
             isRouletting = false;
-            rouletteBtn.style.background = "#706a53";
+            rouletteBtn.style.background = "#3b485f";
             rouletteBtn.innerHTML = "Start";
             clearInterval(timer);
             const result = target[Math.floor(Math.random() * target.length)];
@@ -36,7 +51,7 @@ window.onload = () => {
         } else {
             // press roulette start
             isRouletting = true;
-            rouletteBtn.style.background = "#3b485f";
+            rouletteBtn.style.background = "#706a53";
             rouletteBtn.innerHTML = "Stop";
             const threshold = document.getElementById("rare-selector").value;
             target = satsumaShochu.filter(shochu => shochu.stock > 0)
@@ -58,8 +73,8 @@ window.onload = () => {
 
     // DB control
     const table = document.getElementById("database");
-    const tableBody = document.createElement("tbody");
-    satsumaShochu.map(shochu => {
+    const tableBody = document.getElementById("table-body");
+    function createTableElem(shochu) {
         const row = document.createElement("tr");
         // Image cell
         const imgCell = document.createElement("td");
@@ -74,13 +89,52 @@ window.onload = () => {
         nameCell.appendChild(nameText);
         row.appendChild(nameCell);
 
-        // Memo cell
-        const memoCell = document.createElement("td");
-        const memoText = document.createTextNode(shochu.rare);
-        memoCell.appendChild(memoText);
-        row.appendChild(memoCell);
+        // Rare cell
+        const rareCell = document.createElement("td");
+        let star = "";
+        for (let i = 0; i < shochu.rare; i++) {
+            star += "☆";
+        }
+        const rareText = document.createTextNode(star);
+        rareCell.appendChild(rareText);
+        row.appendChild(rareCell);
 
         tableBody.appendChild(row);
-    })
+    };
+    // default table
+    satsumaShochu.map(createTableElem);
     table.appendChild(tableBody);
+
+    // sorting control
+    let nameAscendingOrder = false;
+    const nameSortBtn = document.getElementById("name-sort-btn");
+    nameSortBtn.addEventListener("click", () => {
+        if (nameAscendingOrder) {
+            nameAscendingOrder = false;
+            nameSortBtn.innerHTML = "▼";
+            tableBody.innerHTML = "";
+            bubbleSortObj(satsumaShochu, "name").reverse().map(createTableElem);
+        } else {
+            nameAscendingOrder = true;
+            nameSortBtn.innerHTML = "▲";
+            tableBody.innerHTML = "";
+            bubbleSortObj(satsumaShochu, "name").map(createTableElem);
+        }
+    });
+
+    let rareAscendingOrder = false;
+    const rareSortBtn = document.getElementById("rare-sort-btn");
+    rareSortBtn.addEventListener("click", () => {
+        if (rareAscendingOrder) {
+            rareAscendingOrder = false;
+            rareSortBtn.innerHTML = "▼";
+            tableBody.innerHTML = "";
+            bubbleSortObj(satsumaShochu, "rare").reverse().map(createTableElem);
+        } else {
+            rareAscendingOrder = true;
+            rareSortBtn.innerHTML = "▲";
+            tableBody.innerHTML = "";
+            bubbleSortObj(satsumaShochu, "rare").map(createTableElem);
+        }
+    });
 };

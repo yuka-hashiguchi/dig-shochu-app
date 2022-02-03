@@ -1,14 +1,19 @@
 body {
   color: #3b485f;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", YuGothic, "ヒラギノ角ゴ ProN W3", Hiragino Kaku Gothic ProN, Arial, "メイリオ", Meiryo, sans-serif;
-  background: linear-gradient(90deg, #89a9cd 20%, #3b485f 20%, #3b485f 40%, #706a53 40%, #706a53 60%, #425f86 60%, #425f86 80%, #d4cdc1 80%, #d4cdc1 100%);
+  background: linear-gradient(90deg, #89a9cd 25%, #3b485f 25%, #3b485f 50%, #706a53 50%, #706a53 75%, #425f86 75%, #425f86 100%);
 }
 
-h3 {
+p {
   text-align: center;
 }
 
+h2 {
+  color: #706a53;
+}
+
 .menu {
+  padding: 5px 10px;
   height: 250px;
   background: rgb(165 193 222) url("./img/sakurajima-horizontal.jpg") no-repeat center center;
   background-size: cover;
@@ -24,6 +29,7 @@ h3 {
   margin: 5px;
   list-style: none;
   border: solid 2px #d4cdc1;
+  border-radius: 20px;
   text-align: center;
   cursor: pointer;
 }
@@ -39,9 +45,11 @@ h3 {
 }
 
 .contents{
-  margin-top: 130px;
+  margin-top: 110px;
   background: #d4cdc1;
   height: 660px;
+  padding: 15px;
+  overflow-y: scroll;
 }
 
 .content{
@@ -52,21 +60,27 @@ h3 {
   display: block;
 }
 
+#mdn-history {
+  height: 300px;
+}
+
 #roulette-img {
   display: block;
   margin: auto;
   border-radius: 20px;
-  padding: 10px 30px 30px 30px;
+  padding: 10px 30px;
   height: 403px;
   width: 302px;
 }
 
 .select-wrapper {
-  border-radius: 50px;
   padding-bottom: 30px;
 }
 
 #rare-selector {
+  border-radius: 20px;
+  color: #706a53;
+  background-color: #d4cdc1;
   display: block;
   margin: auto;
   padding: 5px;
@@ -75,31 +89,30 @@ h3 {
 #roulette-btn {
   display: block;
   margin: 0 auto;
-  padding: 15px;
+  padding: 10px;
   font-size: 1.6rem;
   font-weight: 700;
   line-height: 1.5;
   cursor: pointer;
   transition: all 0.3s;
   text-align: center;
-  vertical-align: middle;
   text-decoration: none;
   letter-spacing: 0.1em;
-  background: #706a53;
+  background: #425f86;
   color: #d4cdc1;
-  border-radius: 0.5rem;
+  border-radius: 50px;
   box-shadow: inset 1px 1px 1px #d4cdc1;
 }
 
 #roulette-btn:hover {
-  background: #4b4737;
+  background: #26374e;
 }
 
 table {
   display: block;
   overflow-y: scroll;
   height: 520px;
-  width: 610px;
+  width: 590px;
   margin: auto;
 }
 
@@ -110,18 +123,23 @@ th, td {
   border: 0.5px solid #706a53;
 }
 
+.table-scroll {
+  overflow: auto;
+}
+
 .fixed {
   position: sticky;
   top: 0;
-  color: #89a9cd;
-  background: #425f86;
-  &:before{
-    content: "";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #d4cdc1;
-  }
+  color: #d4cdc1;
+  background: #3b485f;
+}
+
+.sort-btn {
+  background-color: #d4cdc1;
+  border-radius: 20px;
+  color: #425f86;
+}
+
+.sort-btn:hover {
+  background-color: #4b4737;
 }

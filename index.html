@@ -9,57 +9,175 @@
   <link rel="stylesheet" type="text/css" href="./stylesheet.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
   <script type="text/javascript" src="./shochu.js"></script>
   <script type="text/javascript" src="./script.js"></script>
 </head>
 
 <body>
   <div class="menu">
-    <h1>Boku Shochu Kimi Shochu</h1>
-    <h2>Select Menu</h2>
+    <h1>Enjoy our shochu life more!</h1>
+    <h3>Select Menu</h2>
     <div>
       <ul class="tab-menu">
         <li id="0" class="tab tab-home is-active">Home</li>
-        <li id="1" class="tab tab-roulette">Roulette</li>
-        <li id="2" class="tab tab-db">Shochu DB</li>
+        <li id="1" class="tab tab-db">Shochu DB</li>
+        <li id="2" class="tab tab-roulette">Roulette</li>
       </ul>
   </div>
   <div class="contents">
     <div class="content is-show">
-      <h2>Modify Code</h2>
+      <h2>Presentation</h2>
+      <u><h3>このアプリについて</h3></u>
+      <h4>家にある芋焼酎を一覧化し，今夜飲む焼酎を決めるルーレットを提供するアプリ</h4>
+      <ul>
+        <li>Shochu DBは，名前（アルファベット順）またはレア度（個人的に判断基準を持って制定）でソートできる</li>
+        <li>Rouletteは，Start/Stopのトグルボタンを提供．Stop時に表示されたものを今夜飲む焼酎にする（何回やっても良い）
+          <ul>
+            <li>レアな焼酎を飲みたい日もあるため，ルーレットに出てくる候補をレア度で制限することができる</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h4>TODO</h4>
+      <ul>
+        <li>焼酎の在庫管理機能の追加</li>
+        <li>飲んだ焼酎の感想を記録するメモ機能の追加</li>
+      </ul>
+      必要になりそうなこと
+      <ul>
+        <li>ユーザの操作によって内部のshochu.jsを書き換える方法(DBサーバ?)</li>
+        <li>DBを書き換えられるのは管理者権限を持つ人のみなどといった制限をつける方法</li>
+      </ul>
+
+      <u><h3>実装のポイント</h3></u>
+      <h4>焼酎DBの作成</h4>
       <pre>
-        <code>
-          target = satsumaShochu.filter(shochu => shochu.stock > 0)
-                  .filter(shochu => shochu.rare >= threshold)
-                  .map(shochu => shochu.name);
+        <code class="javascript">
+          // pokemonの授業を思い出しながら，objectの配列で実装
+          const satsumaShochu = [
+            {
+              name: "bukeyashiki-shunshu",
+              nameJp: "武家屋敷 旬酒",
+              stock: 1,
+              rare: 4,
+              howTo: "hot water"  // 基本お湯割り
+            },
+            // ...
+          ];
         </code>
       </pre>
-      https://colorkitty.com/
-      <h2>Select Menu</h2>
+
+      <h4>焼酎DBソート機能の作成</h4>
+      <pre>
+        <code class="javascript">
+          // 独自実装でオブジェクトの配列を返すソートを実装
+          function bubbleSortObj(arrayOfObj, sortKey) {
+            for (let i = 0; i < arrayOfObj.length - 1; i++) {
+              for (let j = 0; j < arrayOfObj.length - 1 - i; j++) {
+                if (arrayOfObj[j][sortKey] > arrayOfObj[j + 1][sortKey]) {
+                  const tmp = arrayOfObj[j + 1];
+                  arrayOfObj[j + 1] = arrayOfObj[j];
+                  arrayOfObj[j] = tmp;
+                }
+              }
+            }
+            return arrayOfObj;
+          }
+
+          // 使用例
+          // htmlの表を作るときに，整列したオブジェクトの配列が必要
+          bubbleSortObj(satsumaShochu, "name").map(createTableElem);  // 名前昇順
+          bubbleSortObj(satsumaShochu, "rare").reverse().map(createTableElem);  // レア度降順
+
+        </code>
+      </pre>
+
+      <h4>ルーレットの実装</h4>
+      <pre>
+        <code>
+          // Math.random()でimgエレメントの画像を差し替える
+          const shochuName = target[Math.floor(Math.random() * target.length)];
+          rouletteImg.src = `./img/${ shochuName }.jpg`;
+        </code>
+      </pre>
+
+      <h4>高階関数+アロー関数を駆使してエレガントに書く!</h4>
+      <pre>
+        <code class="javascript">
+          // 1. ルーレットの候補を，残量と指定されたレア度で絞りこむための処理
+          let target;
+          target = satsumaShochu.filter(shochu => shochu.stock > 0)
+                .filter(shochu => shochu.rare >= threshold)
+                .map(shochu => shochu.name);
+
+          // 2. アロー関数式が使えない場合も発見
+          const tab = document.getElementsByClassName("tab")[0];
+          tab.addEventListener("click", function () {
+            // control is-active class of tab-menu
+            document.querySelector(".is-active").classList.remove("is-active");
+            this.classList.add("is-active");  // tabエレメントを制御したい場合
+            // ...
+          });
+        </code>
+      </pre>
+
+      <u><h3>学び</h3></u>
+      <ul>
+        <li>解答例を勉強しない
+          <ul>
+            <li>
+              <a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Logical_AND">最初にMDNで仕様を調べる楽しさを知ったページ</a>
+            </li>
+            <li>お互い考えていることを話しながら進めたペアプロもすごく勉強になりました</li>
+          </ul>
+        </li>
+        <li>メソッドを使えば実現できそうなものでも，内部実装を想像できる力をつける努力
+          <ul>
+            <li>演習問題の多次元配列展開とか，ソートの実装など</li>
+          </ul>
+        </li>
+      </ul>
+
+      <u><h3>その他プチ情報</h3></u>
+      <ul>
+        <li><a href="https://colorkitty.com/">デザインの配色決め</a></li>
+        <li><a href="https://blog.narito.ninja/detail/57">htmlでコードブロックをハイライトする</a></li>
+      </ul>
     </div>
     <div class="content">
-      <h3>Today's Shochu!</h3>
+      <h2>Shochu DB</h2>
+      <div class="table-scroll">
+        <table id="database" border="1">
+          <thead>
+            <tr>
+              <th class="fixed">Image</th>
+              <th class="fixed">Name
+                <button id="name-sort-btn" class="sort-btn" type="button">▼</button>
+              </th>
+              <th class="fixed">Rare
+                <button id="rare-sort-btn" class="sort-btn" type="button">▼</button>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="content">
+      <h2>Today's Shochu!</h2>
       <img id="roulette-img" src="./img/satsumashochu-logo.jpg">
       <div class="select-wrapper">
+        <p>More than</p>
         <select name="rare-selector" id="rare-selector">
-          <option value="5">Very rare</option>
-          <option value="4">Rare</option>
-          <option value="3">Neutral</option>
-          <option value="2">Less rare</option>
-          <option value="1" selected>Not Rare</option>
+          <option value="5">☆☆☆☆☆</option>
+          <option value="4">☆☆☆☆</option>
+          <option value="3">☆☆☆</option>
+          <option value="2">☆☆</option>
+          <option value="1" selected>☆</option>
         </select>
       </div>
       <button id="roulette-btn" type="button">Start</button>
-    </div>
-    <div class="content">
-      <h3>Shochu DB</h3>
-      <table id="database" border="1">
-        <tr>
-          <th class="fixed">Image</th>
-          <th class="fixed">Name</th>
-          <th class="fixed">Rare</th>
-        </tr>
-      </table>
     </div>
   </div>
 </body>
